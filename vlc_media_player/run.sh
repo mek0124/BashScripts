@@ -1,22 +1,25 @@
 #!/bin/bash
 
-# This script opens the user's music folder in VLC Media Player for easier access and playing
+# Optimized script for smooth music playback in VLC
 
 music_folder="$HOME/Music"
+vlc_settings="--file-caching=5000 --network-caching=5000 --no-video"
 
-# Check if VLC is installed
+# Check requirements
 if ! command -v vlc &> /dev/null; then
-    echo "Error: VLC media player is not installed."
+    notify-send "VLC Error" "VLC media player is not installed."
     exit 1
 fi
 
-# Check if music folder exists
 if [ ! -d "$music_folder" ]; then
-    echo "Error: Music folder not found at $music_folder"
+    notify-send "Music Error" "Music folder not found at $music_folder"
     exit 1
 fi
 
-# Open VLC with the music folder, suppressing DVD-related errors
-vlc "$music_folder" 2> >(grep -v "dvdnav demux error" >&2) & disown
+# Launch VLC with optimized settings
+vlc $vlc_settings "$music_folder" 2> /dev/null & disown
+
+# Optional: Close the script while keeping VLC running
+exit 0
 
 # Once the media player starts, you can close the terminal and it will still play!
